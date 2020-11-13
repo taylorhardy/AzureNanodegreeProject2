@@ -1,5 +1,6 @@
 import azure.functions as func
 import pymongo
+import ssl 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
@@ -7,9 +8,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     if request:
         try:
-            url = "localhost"  # TODO: Update with appropriate MongoDB connection information
-            client = pymongo.MongoClient(url)
-            database = client['azure']
+            url = "mongodb://azurenanodegreecosmodbproject2:zcg0hrwtpsvqVB8z1FBkOQtMYnYmYU6raGF9yYrQg4fp2x90Hx7aY5tcyJu3GsQCYTVZdDLYucABUtGkvA7auA==@azurenanodegreecosmodbproject2.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@azurenanodegreecosmodbproject2@"
+            client = pymongo.MongoClient(url, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
+            database = client['azurenanodegreecosmodbproject2']
             collection = database['advertisements']
 
             rec_id1 = collection.insert_one(eval(request))

@@ -1,0 +1,174 @@
+data:
+  AzureWebJobsStorage: RGVmYXVsdEVuZHBvaW50c1Byb3RvY29sPWh0dHBzO0VuZHBvaW50U3VmZml4PWNvcmUud2luZG93cy5uZXQ7QWNjb3VudE5hbWU9cHJvamVjdDJhcHBzdG9yYWdlO0FjY291bnRLZXk9UTdmcmdwY0tUUmdPRGt0eHdmZllQVk5jY1FYUnlWVXc1RWRrNThZSEtpYzUwMkN2Mkk3RHg3aUpaNmlVVlF0Rys2M1VNNnpwQ2dNNStlVjZVbXR3dmc9PQ==
+  FUNCTIONS_WORKER_RUNTIME: cHl0aG9u
+  FUNCTIONS_EXTENSION_VERSION: fjI=
+  MyDbConnection: bW9uZ29kYjovL2F6dXJlbmFub2RlZ3JlZWNvc21vZGJwcm9qZWN0Mjp6Y2cwaHJ3dHBzdnFWQjh6MUZCa09RdE1ZblltWVU2cmFHRjl5WXJRZzRmcDJ4OTBIeDdhWTV0Y3lKdTNHc1FDWVRWWmRETFl1Y0FCVXRHa3ZBN2F1QT09QGF6dXJlbmFub2RlZ3JlZWNvc21vZGJwcm9qZWN0Mi5tb25nby5jb3Ntb3MuYXp1cmUuY29tOjEwMjU1Lz9zc2w9dHJ1ZSZyZXBsaWNhU2V0PWdsb2JhbGRiJm1heElkbGVUaW1lTVM9MTIwMDAwJmFwcE5hbWU9QGF6dXJlbmFub2RlZ3JlZWNvc21vZGJwcm9qZWN0MkA=
+apiVersion: v1
+kind: Secret
+metadata:
+  name: azurenanodegreeproject2cluster
+  namespace: default
+---
+data:
+  host.master: enNSdFBPVGZueUx6YVRUSHdlR1dhdE0ydzBPcUFGS2ppSlBkZjdIYThZeG0veFQ5LzgzTlB3PT0=
+  host.function.default: ZkVuUzlNbzRyVGRmUmZpb3lPMWdiekZXekpwWTdxczVvaU9KZlJWUlNnNElIbk8zY3BQcU9BPT0=
+  host.systemKey.default: UWh0aXVXUlpsUkNUd21mN0VvdHRvN2VSTk9SNmN3NlI2VHN2WU4xaUcwNDRmaC9jM0lpR01BPT0=
+  functions.createadvertisement.default: bWgyWjdaQmk4WW9OUkEybUlhZFhNQnFaSi9qNGhvTzZWQ2U2WUQzck5IY2VaTlJGWTR0TnhBPT0=
+  functions.deleteadvertisement.default: bzR0V3htVThld1VLbnQ3TndtRE5zZ1dYZ0VORGN3aG52Z01YMk9mRy9HM250YnV0SFJzdUd3PT0=
+  functions.getadvertisement.default: SGYvNUh4WVdWR0V5SGFVVTN2aU1nTlU2dnJxajVOYVZnbWI4MzZZdk8zQzh1SWJ3d1paSmVnPT0=
+  functions.getadvertisements.default: WlgxSEZ3M3hqTmpDeVlJZFBMd3BqRmF5Q3BOTTJIZUYzdmd0Ukp2NUZhcVZIUFN3SHpBQzVnPT0=
+  functions.getpost.default: eUx4YXdzRDhlMUJKN245cnkvano1SXpqUTlVR0VRajFxRkFKQ05MaEl1QWUvQWtTd0JoUkVRPT0=
+  functions.getposts.default: QjdZY0Z6bmsxYmwvYkZaTnNKNzNsMzlwWmwwajIwUktLZDNCamVkQTZNL2JhbHpwbkFvcGFBPT0=
+  functions.updateadvertisement.default: aTNuQ2NrMGVjSU56cGhhSTBXeVJhc0VWdU1MZURWNWhaVGNCTHVBRE1obzhrb0ZxeXVQc2VBPT0=
+apiVersion: v1
+kind: Secret
+metadata:
+  name: func-keys-kube-secret-azurenanodegreeproject2cluster
+  namespace: default
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: azurenanodegreeproject2cluster-function-keys-identity-svc-act
+  namespace: default
+---
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - secrets
+  - configMaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: functions-keys-manager-role
+  namespace: default
+---
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: functions-keys-manager-role
+subjects:
+- kind: ServiceAccount
+  name: azurenanodegreeproject2cluster-function-keys-identity-svc-act
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: azurenanodegreeproject2cluster-function-keys-identity-svc-act-functions-keys-manager-rolebinding
+  namespace: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azurenanodegreeproject2cluster-http
+  namespace: default
+spec:
+  selector:
+    app: azurenanodegreeproject2cluster-http
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azurenanodegreeproject2cluster-http
+  namespace: default
+  labels:
+    app: azurenanodegreeproject2cluster-http
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azurenanodegreeproject2cluster-http
+  template:
+    metadata:
+      labels:
+        app: azurenanodegreeproject2cluster-http
+    spec:
+      containers:
+      - name: azurenanodegreeproject2cluster-http
+        image: azurenanodegreeproject2container.azurecr.io/project2
+        ports:
+        - containerPort: 80
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: createAdvertisement
+        - name: AzureFunctionsJobHost__functions__1
+          value: deleteAdvertisement
+        - name: AzureFunctionsJobHost__functions__2
+          value: getAdvertisement
+        - name: AzureFunctionsJobHost__functions__3
+          value: getAdvertisements
+        - name: AzureFunctionsJobHost__functions__4
+          value: getPost
+        - name: AzureFunctionsJobHost__functions__5
+          value: getPosts
+        - name: AzureFunctionsJobHost__functions__6
+          value: updateAdvertisement
+        - name: AzureWebJobsSecretStorageType
+          value: kubernetes
+        - name: AzureWebJobsKubernetesSecretName
+          value: secrets/func-keys-kube-secret-azurenanodegreeproject2cluster
+        envFrom:
+        - secretRef:
+            name: azurenanodegreeproject2cluster
+      serviceAccountName: azurenanodegreeproject2cluster-function-keys-identity-svc-act
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azurenanodegreeproject2cluster
+  namespace: default
+  labels:
+    app: azurenanodegreeproject2cluster
+spec:
+  selector:
+    matchLabels:
+      app: azurenanodegreeproject2cluster
+  template:
+    metadata:
+      labels:
+        app: azurenanodegreeproject2cluster
+    spec:
+      containers:
+      - name: azurenanodegreeproject2cluster
+        image: azurenanodegreeproject2container.azurecr.io/project2
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: eventHubTrigger
+        envFrom:
+        - secretRef:
+            name: azurenanodegreeproject2cluster
+      serviceAccountName: azurenanodegreeproject2cluster-function-keys-identity-svc-act
+---
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: azurenanodegreeproject2cluster
+  namespace: default
+  labels:
+    deploymentName: azurenanodegreeproject2cluster
+spec:
+  scaleTargetRef:
+    deploymentName: azurenanodegreeproject2cluster
+  triggers:
+  - type: eventgridtrigger
+    metadata:
+      type: eventGridTrigger
+      name: event
+      direction: in
+      eventHubName: azurenanodegreeproject2eventhub
+      connection: Endpoint=sb://azurenanodegreeproject2eventhub.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=OpR9Ezhrz/SFpmxgD+4i4zodv+8v526SBK+h2rrAWvA=
+---
+
